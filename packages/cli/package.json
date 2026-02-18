@@ -1,0 +1,25 @@
+{
+  "name": "@api-graph/cli",
+  "version": "1.0.0",
+  "bin": {
+    "api-graph": "./dist/index.js"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "pnpm clean && tsc",
+    "clean": "rimraf dist",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@api-graph/core": "workspace:*",
+    "@api-graph/server": "workspace:*",
+    "commander": "^11.0.0",
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "name": "@api-graph/ui",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start",
+    "clean": "rm -rf .next out"
+  },
+  "dependencies": {
+    "@api-graph/core": "workspace:*",
+    "next": "14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "reactflow": "^11.10.1",
+    "dagre": "^0.8.5",
+    "@radix-ui/react-tooltip": "^1.0.7",
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.2.0",
+    "lucide-react": "^0.303.0",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/dagre": "^0.7.52",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.17",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.0"
+  }
+}
