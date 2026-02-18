@@ -10,3 +10,6 @@ coverage/
 *.log
 .env
 .env.local
+
+examples/*
+!examples/*.zip
