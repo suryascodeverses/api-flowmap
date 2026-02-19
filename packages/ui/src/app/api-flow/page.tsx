@@ -1,16 +1,23 @@
-'use client';
+"use client";
 
-import { AppLayout } from '@/components/layout/AppLayout';
-import { GraphCanvas } from '@/components/graph/GraphCanvas';
-import { GraphSidebar } from '@/components/graph/GraphSidebar';
+import { AppLayout } from "@/components/layout/AppLayout";
+import { ApiList } from "@/components/api-flow/ApiList";
+import { ApiFlowGraph } from "@/components/api-flow/ApiFlowGraph";
+import { useState } from "react";
+import { RouteNode } from "@api-graph/core";
 
 export default function ApiFlowPage() {
+  const [selectedRoute, setSelectedRoute] = useState<RouteNode | null>(null);
+
   return (
     <AppLayout>
       <div className="flex-1 overflow-hidden flex">
-        <GraphSidebar />
+        <ApiList
+          selectedRoute={selectedRoute}
+          onSelectRoute={setSelectedRoute}
+        />
         <div className="flex-1 relative">
-          <GraphCanvas />
+          <ApiFlowGraph selectedRoute={selectedRoute} />
         </div>
       </div>
     </AppLayout>
