@@ -9,7 +9,6 @@ import {
   Box,
   Layers,
   Database,
-  GitBranch,
   ChevronRight,
 } from "lucide-react";
 
@@ -18,7 +17,7 @@ const NAV_ITEMS = [
     href: "/overview",
     label: "Overview",
     icon: LayoutDashboard,
-    description: "High-level architecture",
+    description: "Architecture flow",
   },
   {
     href: "/routes",
@@ -43,12 +42,6 @@ const NAV_ITEMS = [
     label: "Repositories",
     icon: Database,
     description: "Data access",
-  },
-  {
-    href: "/api-flow",
-    label: "API Flow",
-    icon: GitBranch,
-    description: "Detailed graph",
   },
 ];
 

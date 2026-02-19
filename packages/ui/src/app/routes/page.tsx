@@ -1,28 +1,36 @@
-'use client';
+"use client";
 
-import { AppLayout } from '@/components/layout/AppLayout';
-import { useGraphStore } from '@/lib/store';
-import { DetailCard } from '@/components/lists/DetailCard';
-import { RouteNode } from '@api-graph/core';
+import { useState } from "react";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { useGraphStore } from "@/lib/store";
+import { DetailCard } from "@/components/lists/DetailCard";
+import { RouteNode } from "@api-graph/core";
+import { RouteFlowModal } from "@/components/routes/RouteFlowModal";
+import { GitBranch } from "lucide-react";
 
 const HTTP_COLORS: Record<string, string> = {
-  GET:    '#10b981',
-  POST:   '#3b82f6',
-  PUT:    '#f59e0b',
-  PATCH:  '#f97316',
-  DELETE: '#ef4444',
+  GET: "#10b981",
+  POST: "#3b82f6",
+  PUT: "#f59e0b",
+  PATCH: "#f97316",
+  DELETE: "#ef4444",
 };
 
 export default function RoutesPage() {
-  const graph = useGraphStore(s => s.graph);
-  const routes = graph?.nodes.filter(n => n.type === 'route') as RouteNode[] || [];
+  const graph = useGraphStore((s) => s.graph);
+  const routes =
+    (graph?.nodes.filter((n) => n.type === "route") as RouteNode[]) || [];
+  const [selectedRoute, setSelectedRoute] = useState<RouteNode | null>(null);
 
-  const grouped = routes.reduce((acc, route) => {
-    const method = route.metadata.httpMethod;
-    if (!acc[method]) acc[method] = [];
-    acc[method].push(route);
-    return acc;
-  }, {} as Record<string, RouteNode[]>);
+  const grouped = routes.reduce(
+    (acc, route) => {
+      const method = route.metadata.httpMethod;
+      if (!acc[method]) acc[method] = [];
+      acc[method].push(route);
+      return acc;
+    },
+    {} as Record<string, RouteNode[]>,
+  );
 
   const methods = Object.keys(grouped).sort();
 
@@ -43,7 +51,7 @@ export default function RoutesPage() {
             </div>
           ) : (
             <div className="space-y-6">
-              {methods.map(method => (
+              {methods.map((method) => (
                 <section key={method}>
                   <h2 className="text-lg font-semibold text-slate-200 mb-3 flex items-center gap-2">
                     <span
@@ -60,8 +68,12 @@ export default function RoutesPage() {
                     </span>
                   </h2>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {grouped[method].map(route => (
-                      <RouteCard key={route.id} route={route} />
+                    {grouped[method].map((route) => (
+                      <RouteCard
+                        key={route.id}
+                        route={route}
+                        onViewFlow={() => setSelectedRoute(route)}
+                      />
                     ))}
                   </div>
                 </section>
@@ -70,17 +82,31 @@ export default function RoutesPage() {
           )}
         </div>
       </div>
+
+      {selectedRoute && (
+        <RouteFlowModal
+          route={selectedRoute}
+          onClose={() => setSelectedRoute(null)}
+        />
+      )}
     </AppLayout>
   );
 }
 
-function RouteCard({ route }: { route: RouteNode }) {
-  const graph = useGraphStore(s => s.graph);
-  const getEdgesForNode = useGraphStore(s => s.getEdgesForNode);
+function RouteCard({
+  route,
+  onViewFlow,
+}: {
+  route: RouteNode;
+  onViewFlow: () => void;
+}) {
+  const graph = useGraphStore((s) => s.graph);
+  const getEdgesForNode = useGraphStore((s) => s.getEdgesForNode);
 
   const { outgoing } = getEdgesForNode(route.id);
-  const handler = outgoing.find(e => e.type === 'routes-to');
-  const handlerNode = handler && graph?.nodes.find(n => n.id === handler.target);
+  const handler = outgoing.find((e) => e.type === "routes-to");
+  const handlerNode =
+    handler && graph?.nodes.find((n) => n.id === handler.target);
 
   const middleware = route.metadata.middleware || [];
 
@@ -93,15 +119,21 @@ function RouteCard({ route }: { route: RouteNode }) {
       lineNumber={route.lineNumber}
     >
       {handlerNode && (
-        <div>
-          <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Handler</p>
-          <p className="text-sm font-mono text-slate-300">{handlerNode.label}</p>
+        <div className="mb-3">
+          <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">
+            Handler
+          </p>
+          <p className="text-sm font-mono text-slate-300">
+            {handlerNode.label}
+          </p>
         </div>
       )}
 
       {middleware.length > 0 && (
-        <div className="mt-3">
-          <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Middleware</p>
+        <div className="mb-3">
+          <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">
+            Middleware
+          </p>
           <div className="flex flex-wrap gap-1.5">
             {middleware.map((m, i) => (
               <span
@@ -114,6 +146,14 @@ function RouteCard({ route }: { route: RouteNode }) {
           </div>
         </div>
       )}
+
+      <button
+        onClick={onViewFlow}
+        className="w-full mt-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/50 rounded-md text-sm font-medium text-cyan-400 transition-colors flex items-center justify-center gap-2"
+      >
+        <GitBranch size={16} />
+        View API Flow
+      </button>
     </DetailCard>
   );
 }
